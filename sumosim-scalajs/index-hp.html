@@ -1,0 +1,107 @@
+
+<html>
+<head>
+<title>sumo-sim</title>
+<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+<style type="text/css">
+body {
+	background-color: black;
+	color: white;
+	font-family: monospace;
+	font-size: large;
+	margin: 10px;
+	text-align: center;
+}
+
+a:link {
+	color: white;
+}
+
+a:visited {
+	color: white;
+}
+
+h1 {
+	border-bottom-style: solid;
+	border-bottom-color: white;
+	border-bottom-width: 1px
+}
+#middle {
+    margin-top: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 600px;
+}
+#preload-0005 { background: url('target/scala-2.11/classes/robot-2d/robo1/img7.png') no-repeat -9999px -9999px; }
+#preload-0006 { background: url('target/scala-2.11/classes/robot-2d/robo1/img6.png') no-repeat -9999px -9999px; }
+#preload-0007 { background: url('target/scala-2.11/classes/robot-2d/robo1/img5.png') no-repeat -9999px -9999px; }
+#preload-0008 { background: url('target/scala-2.11/classes/robot-2d/robo1/img4.png') no-repeat -9999px -9999px; }
+#preload-0009 { background: url('target/scala-2.11/classes/robot-2d/robo1/img3.png') no-repeat -9999px -9999px; }
+#preload-0010 { background: url('target/scala-2.11/classes/robot-2d/robo1/img2.png') no-repeat -9999px -9999px; }
+#preload-0011 { background: url('target/scala-2.11/classes/robot-2d/robo1/img1.png') no-repeat -9999px -9999px; }
+#preload-0012 { background: url('target/scala-2.11/classes/robot-2d/robo1/img0.png') no-repeat -9999px -9999px; }
+#preload-0013 { background: url('target/scala-2.11/classes/robot-2d/robo2/img7.png') no-repeat -9999px -9999px; }
+#preload-0014 { background: url('target/scala-2.11/classes/robot-2d/robo2/img6.png') no-repeat -9999px -9999px; }
+#preload-0015 { background: url('target/scala-2.11/classes/robot-2d/robo2/img5.png') no-repeat -9999px -9999px; }
+#preload-0016 { background: url('target/scala-2.11/classes/robot-2d/robo2/img4.png') no-repeat -9999px -9999px; }
+#preload-0017 { background: url('target/scala-2.11/classes/robot-2d/robo2/img3.png') no-repeat -9999px -9999px; }
+#preload-0018 { background: url('target/scala-2.11/classes/robot-2d/robo2/img2.png') no-repeat -9999px -9999px; }
+#preload-0019 { background: url('target/scala-2.11/classes/robot-2d/robo2/img1.png') no-repeat -9999px -9999px; }
+#preload-0020 { background: url('target/scala-2.11/classes/robot-2d/robo2/img0.png') no-repeat -9999px -9999px; }
+#preload-0021 { background: url('target/scala-2.11/classes/robot-2d/sumo-blue/img7.png') no-repeat -9999px -9999px; }
+#preload-0022 { background: url('target/scala-2.11/classes/robot-2d/sumo-blue/img6.png') no-repeat -9999px -9999px; }
+#preload-0023 { background: url('target/scala-2.11/classes/robot-2d/sumo-blue/img5.png') no-repeat -9999px -9999px; }
+#preload-0024 { background: url('target/scala-2.11/classes/robot-2d/sumo-blue/img4.png') no-repeat -9999px -9999px; }
+#preload-0025 { background: url('target/scala-2.11/classes/robot-2d/sumo-blue/img3.png') no-repeat -9999px -9999px; }
+#preload-0026 { background: url('target/scala-2.11/classes/robot-2d/sumo-blue/img2.png') no-repeat -9999px -9999px; }
+#preload-0027 { background: url('target/scala-2.11/classes/robot-2d/sumo-blue/img1.png') no-repeat -9999px -9999px; }
+#preload-0028 { background: url('target/scala-2.11/classes/robot-2d/sumo-blue/img0.png') no-repeat -9999px -9999px; }
+#preload-0029 { background: url('target/scala-2.11/classes/robot-2d/sumo-violet/img7.png') no-repeat -9999px -9999px; }
+#preload-0030 { background: url('target/scala-2.11/classes/robot-2d/sumo-violet/img6.png') no-repeat -9999px -9999px; }
+#preload-0031 { background: url('target/scala-2.11/classes/robot-2d/sumo-violet/img5.png') no-repeat -9999px -9999px; }
+#preload-0032 { background: url('target/scala-2.11/classes/robot-2d/sumo-violet/img4.png') no-repeat -9999px -9999px; }
+#preload-0033 { background: url('target/scala-2.11/classes/robot-2d/sumo-violet/img3.png') no-repeat -9999px -9999px; }
+#preload-0034 { background: url('target/scala-2.11/classes/robot-2d/sumo-violet/img2.png') no-repeat -9999px -9999px; }
+#preload-0035 { background: url('target/scala-2.11/classes/robot-2d/sumo-violet/img1.png') no-repeat -9999px -9999px; }
+#preload-0036 { background: url('target/scala-2.11/classes/robot-2d/sumo-violet/img0.png') no-repeat -9999px -9999px; }
+</style>
+<script type="text/javascript">
+	// Set the size of the canvas to the size of the enclosing tag 
+	$(document).ready(function() {
+		var middle = document.getElementById("middle");
+		var canvas = document.getElementById("canvas");
+		canvas.width = middle.offsetWidth;
+		canvas.height = middle.offsetWidth * 0.7;
+	});
+</script>
+</head>
+<body>
+	<h1>sumo-sim</h1>
+	<div id="middle">
+	<p>
+		sumo-sim is a simulation environment for <a
+			href="http://en.wikipedia.org/wiki/Robot-sumo">robot sumo</a>.
+		for more details visit the <a href="http://sumosim.blogspot.com/">sumo-sim
+			blog</a>
+	</p>
+	<p>
+		<canvas id="canvas">Canvas tag not supported</canvas>
+	</p>
+	<p id="links">examples: 
+		<a id="a" href="#">A</a> <a id="b" href="#">B</a> <a id="c"
+			href="#">C</a> <a id="d" href="#">D</a>
+	</p>
+
+	<p>for examples C and D you must use the arrow keys to control the red robot</p>
+	</div>
+
+	<!-- 
+	<script type="text/javascript" src="target/scala-2.11/sumosim-scalajs-fastopt.js"></script>
+	 -->
+	<script type="text/javascript" src="target/scala-2.11/sumosim-scalajs-opt.js"></script>
+
+	<script type="text/javascript">
+	ScalajsMultiMain().main();
+	</script>
+</body>
+</html>

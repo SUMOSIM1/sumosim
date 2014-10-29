@@ -1,0 +1,16 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: monospace;
+  font-size: large;
+  margin: 30px;
+  text-align: center;
+}
+a:link    { color:white; }
+a:visited { color:white; }
+h1 {
+  border-bottom-style: solid;
+  border-bottom-color: white;
+  border-bottom-width: 1px
+}
+

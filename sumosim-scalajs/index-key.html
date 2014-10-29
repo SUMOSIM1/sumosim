@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>sumosim</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+<!-- Style for 'layout02' -->
+<style type="text/css">
+body {
+	font-family: sans-serif;
+	font-size: x-small;
+    background-color: black;
+    overflow: hidden;
+}
+
+#middle {
+    margin-top: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+}
+</style>
+<script type="text/javascript">
+	// Set the size of the canvas to the size of the enclosing tag 
+	$(document).ready(function() {
+		var middle = document.getElementById("middle");
+		var canvas = document.getElementById("canvas");
+		canvas.width = middle.offsetWidth;
+		canvas.height = middle.offsetWidth;
+	});
+</script>
+</head>
+<body>
+
+
+	<div id="middle">
+		<canvas id="canvas">Canvas tag not supported</canvas>
+	</div>
+
+	<script type="text/javascript" src="target/scala-2.11/sumosim-scalajs-fastopt.js"></script>
+
+	<script type="text/javascript">
+	ScalajsKeyMain().main();
+	</script>
+		
+
+</body>
+</html>

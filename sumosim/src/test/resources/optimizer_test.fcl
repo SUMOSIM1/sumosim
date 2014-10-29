@@ -1,0 +1,104 @@
+FUNCTION_BLOCK CombisensorDiffdrive
+
+VAR_INPUT
+    leftBorderDist : REAL;
+    frontBorderDist : REAL;
+    rightBorderDist : REAL;
+    opponentDir : REAL;
+END_VAR
+
+VAR_OUTPUT
+    rightVelo : REAL;
+    leftVelo : REAL;
+END_VAR
+
+FUZZIFY opponentDir
+    TERM invisible := -1; 
+    TERM left := 0;
+    TERM center := 1;
+    TERM right := 2;
+END_FUZZIFY
+
+FUZZIFY leftBorderDist
+    TERM near := (0, 1) (200, 1) (300, 0); 
+    TERM medium := (200, 0) (300, 1) (600, 0);
+    TERM far := (500, 0) (600, 1) (800, 1);
+END_FUZZIFY
+
+FUZZIFY frontBorderDist
+    TERM near := (0, 1) (200, 1) (300, 0); 
+    TERM medium := (200, 0) (300, 1) (600, 0);
+    TERM far := (500, 0) (600, 1) (800, 1);
+END_FUZZIFY
+
+FUZZIFY rightBorderDist
+    TERM near := (0, 1) (200, 1) (300, 0); 
+    TERM medium := (200, 0) (300, 1) (600, 0);
+    TERM far := (500, 0) (600, 1) (800, 1);
+END_FUZZIFY
+
+DEFUZZIFY rightVelo
+    TERM fastforward := (10,0) (20,1);
+    TERM forward := (0,0) (10,1) (20,0);
+    TERM standstill := (-10,0) (0,1) (10,0);
+    TERM backward := (-20,0) (-10,1) (0,0);
+    TERM fastBackward := (-20,1) (-10,0);
+    METHOD : COG;
+    DEFAULT := 30;
+END_DEFUZZIFY
+
+DEFUZZIFY leftVelo
+    TERM fastforward := (10,0) (20,1);
+    TERM forward := (0,0) (10,1) (20,0);
+    TERM standstill := (-10,0) (0,1) (10,0);
+    TERM backward := (-20,0) (-10,1) (0,0);
+    TERM fastBackward := (-20,1) (-10,0);
+    METHOD : COG;
+    DEFAULT := 30;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF opponentDir IS invisible
+    				AND frontBorderDist IS near 
+    				AND leftBorderDist IS near 
+    				AND rightBorderDist IS near  
+                THEN 
+                	rightVelo IS fastBackward,
+                	leftVelo IS fastforward;
+
+    RULE 3 : IF opponentDir IS invisible
+    				AND (leftBorderDist IS medium OR leftBorderDist IS far)
+    				AND rightBorderDist IS near 
+                THEN 
+                	leftVelo IS standstill,
+                	rightVelo IS forward;
+
+    RULE 2 : IF opponentDir IS invisible
+    				AND leftBorderDist IS near 
+    				AND (rightBorderDist IS medium OR rightBorderDist IS far)
+                THEN 
+                	rightVelo IS standstill,
+                	leftVelo IS forward;
+
+    RULE 4 : IF opponentDir IS left
+                THEN 
+                	leftVelo IS fastforward,
+                	rightVelo IS forward;
+
+    RULE 5 : IF opponentDir IS right
+                THEN 
+                	leftVelo IS forward,
+                	rightVelo IS fastforward;
+
+    RULE 6 : IF opponentDir IS center
+                THEN 
+                	leftVelo IS fastforward,
+                	rightVelo IS fastforward;
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
