@@ -1,0 +1,3 @@
+[submodule "doctus-core"]
+	path = doctus-core
+	url = https://github.com/DOCTUS3/doctus-core.git

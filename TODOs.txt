@@ -1,3 +1,0 @@
-- Make a better controller element. Regions must be defined.
-- Make a reactive controller element.
-
