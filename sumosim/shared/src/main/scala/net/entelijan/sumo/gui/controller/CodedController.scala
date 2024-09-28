@@ -1,6 +1,6 @@
 package net.entelijan.sumo.gui.controller
 
-import doctus.core.comp.{DoctusSelect, SelectItemDescription, DoctusCard}
+import doctus.core.comp.{DoctusCard, DoctusSelect, SelectItemDescription}
 import doctus.core.util.DoctusUtil
 import doctus.core.{
   DoctusActivatable,
@@ -8,7 +8,7 @@ import doctus.core.{
   DoctusScheduler,
   DoctusSchedulerStopper
 }
-import net.entelijan.sumo.core.{ControlledRobot, Duel}
+import net.entelijan.sumo.core.Duels
 import net.entelijan.sumo.gui.example.{
   CodedDiffDriveControllers,
   DuelExample,
@@ -59,10 +59,7 @@ case class CodedController(
       override def name: String = c2.name
     }
 
-    r2.opponentRobot = r1
-    r1.opponentRobot = r2
-
-    val duel = Duel(ControlledRobot(c1, r1), ControlledRobot(c2, r2))
+    val duel = Duels.create(c1, r1, c2, r2)
     val ex =
       new DuelExample(canvas, duel, Some(sd), scheduler, layout, util)
     stopper = Some(ex.start())

@@ -2,7 +2,7 @@ package net.entelijan.sumo.util
 
 import doctus.core.DoctusSchedulerStopper
 import net.entelijan.sumo.commons.UpdatableMsg
-import net.entelijan.sumo.core.{ControlledRobot, Duel, RobotSimulation}
+import net.entelijan.sumo.core.{Duel, Duels, RobotSimulation}
 import net.entelijan.sumo.robot.*
 
 import java.io.*
@@ -190,12 +190,6 @@ object Helper extends TrigUtil {
       override def name: String = c2.name
     }
 
-    r1.opponentRobot = r2
-    r2.opponentRobot = r1
-
-    val r11 = ControlledRobot(c1, r1)
-    val r12 = ControlledRobot(c2, r2)
-
     val sim = new RobotSimulation[
       CombiSensor,
       DiffDriveValues,
@@ -204,7 +198,7 @@ object Helper extends TrigUtil {
     ] {
       override def duel
           : Duel[CombiSensor, DiffDriveValues, CombiSensor, DiffDriveValues] =
-        Duel(r11, r12)
+        Duels.create(c1, r1, c2, r2)
 
       override def startRunning(): DoctusSchedulerStopper = {
         positionRobotsToStart()

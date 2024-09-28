@@ -2,7 +2,7 @@ package net.entelijan.sumo.reinforcement
 
 import doctus.core.DoctusSchedulerStopper
 import net.entelijan.sumo.commons.*
-import net.entelijan.sumo.core.{ControlledRobot, Duel, RobotSimulation}
+import net.entelijan.sumo.core.{Duel, Duels, RobotSimulation}
 import net.entelijan.sumo.gui.example.CodedDiffDriveControllers
 import net.entelijan.sumo.robot.*
 import net.entelijan.sumo.util.Helper
@@ -12,28 +12,17 @@ object Tryout {
   def run() = {
     println("run simulation and write db from evnts")
 
-    val (c1, c2) = {
-      val id1 = "clever"
-      val id2 = "rotating"
-      (
-        CodedDiffDriveControllers.controller(id1, "A"),
-        CodedDiffDriveControllers.controller(id2, "B")
-      )
-    }
-
-    val w1 = c1
+    val c1 = CodedDiffDriveControllers.controller("clever", "A")
     val r1 = new CombiSensorDiffDriveRobot() {
-      override def name: String = w1.name
+      override def name: String = c1.name
     }
 
+    val c2 = CodedDiffDriveControllers.controller("rotating", "B")
     val r2 = new CombiSensorDiffDriveRobot() {
       override def name: String = c2.name
     }
 
-    r2.opponentRobot = r1
-    r1.opponentRobot = r2
-
-    val myDuel = Duel(ControlledRobot(w1, r1), ControlledRobot(w1, r2))
+    val myDuel = Duels.create(c1, r1, c1, r2)
 
     val sim = new RobotSimulation[
       CombiSensor,

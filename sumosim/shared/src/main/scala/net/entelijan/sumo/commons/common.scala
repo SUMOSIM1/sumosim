@@ -98,6 +98,15 @@ trait RobotEventsCollector {
   */
 trait Robot[S, V] extends SelfRobot {
 
+  // TODO is this a correct defined setter ???
+  def opponentRobot_=(opponentRobot: OpponentRobot) = {
+    // ignore an opponent set
+  }
+
+  def opponentRobot: OpponentRobot = {
+    throw IllegalStateException("No opponent defined")
+  }
+
   /** Moves and rotates a robot to a certain position and direction Must not be
     * used by controllers
     */

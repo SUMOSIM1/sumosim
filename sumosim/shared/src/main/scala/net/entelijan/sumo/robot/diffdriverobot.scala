@@ -123,13 +123,15 @@ abstract class CombiSensorDiffDriveRobot(
     val randomizer: Randomizer = RandomizerImpl()
 ) extends DiffDriveRobot[CombiSensor]
     with OpponentAware {
-  var opponentRobot: OpponentRobot = new OpponentRobot {
-    def xpos: Double = throw new IllegalStateException(
-      "You must set the opponent before you can run a CombiSensorDiffDriveRobot"
-    )
-    def ypos: Double = throw new IllegalStateException(
-      "You must set the opponent before you can run a CombiSensorDiffDriveRobot"
-    )
+
+  private var opponent = Option.empty[OpponentRobot]
+
+  override def opponentRobot_=(opponentRobot: OpponentRobot) = opponent = Some(
+    opponentRobot
+  )
+
+  override def opponentRobot: OpponentRobot = {
+    opponent.getOrElse(throw IllegalStateException("No opponent defined"))
   }
 
   private def sensorOpeningAngleDeg: Double = 30

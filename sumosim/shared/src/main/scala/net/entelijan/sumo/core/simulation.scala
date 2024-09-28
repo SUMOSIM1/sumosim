@@ -11,13 +11,6 @@ case class ControlledRobot[S, V](
     robot: Robot[S, V]
 )
 
-case class Duel[S1, V1, S2, V2](
-    robot1: ControlledRobot[S1, V1],
-    robot2: ControlledRobot[S2, V2]
-) {
-  def name: String = s"${robot1.controller.name} vs ${robot2.controller.name}"
-}
-
 class DemoSumoSim[S1, V1, S2, V2](
     val duel: Duel[S1, V1, S2, V2],
     pauseTime: Int,
@@ -139,7 +132,7 @@ trait RobotSimulation[S1, V1, S2, V2] extends Simulation[S1, V1, S2, V2] {
         xpos2 = robot2.xpos,
         ypos2 = robot2.ypos,
         dir2 = robot2.direction,
-        info = "Another step"
+        info = "Running"
       )
     )
   }

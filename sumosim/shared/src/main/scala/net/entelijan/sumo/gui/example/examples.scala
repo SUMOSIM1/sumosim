@@ -8,7 +8,7 @@ import doctus.core.{
   DoctusSchedulerStopper
 }
 import net.entelijan.sumo.commons.Updatable
-import net.entelijan.sumo.core.{ControlledRobot, DemoSumoSim, Duel, Duels}
+import net.entelijan.sumo.core.{DemoSumoSim, Duel, Duels}
 import net.entelijan.sumo.gui.controller.Util.createUniverse
 import net.entelijan.sumo.gui.renderer.*
 import net.entelijan.sumo.robot.*
@@ -95,9 +95,7 @@ class CleverVsForwardBackwardExample(
       val r2 = new CombiSensorDiffDriveRobot() {
         override def name: String = c2.name
       }
-      r2.opponentRobot = r1
-
-      Duel(ControlledRobot(c1, r1), ControlledRobot(c2, r2))
+      Duels.create(c1, r1, c2, r2)
     }
 
     new DemoSumoSim(duel, 30, scheduler)
@@ -140,10 +138,7 @@ class CleverVsCleverExample(
         override def name: String = c2.name
       }
 
-      r2.opponentRobot = r1
-      r1.opponentRobot = r2
-
-      Duel(ControlledRobot(c1, r1), ControlledRobot(c2, r2))
+      Duels.create(c1, r1, c2, r2)
     }
 
     new DemoSumoSim(duel, 30, scheduler)
@@ -197,10 +192,7 @@ class ManualVsForwardBackwardExample(
 
         }
       }
-      Duel(
-        ControlledRobot(c1, r1),
-        ControlledRobot(c2, r2)
-      )
+      Duels.create(c1, r1, c2, r2)
     }
 
     new DemoSumoSim(duel, 30, scheduler)
@@ -254,7 +246,7 @@ class ManualVsStandstillExample(
           override def name: String = c2.name
         }
       }
-      Duel(ControlledRobot(c1, r1), ControlledRobot(c2, r2))
+      Duels.create(c1, r1, c2, r2)
     }
 
     new DemoSumoSim(duel, 30, scheduler)
