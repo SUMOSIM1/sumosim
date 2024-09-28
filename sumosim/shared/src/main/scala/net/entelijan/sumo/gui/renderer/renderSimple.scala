@@ -164,7 +164,7 @@ class SimpleUniverse(
           AffinePoliPoint(s, b),
           AffinePoliPoint(s, a),
           AffinePoliPoint(b, 0),
-          AffinePoliPoint(a, 0),
+          AffinePoliPoint(a, 0)
         )
       }
       val rect: List[DoctusPoint] = transformShape(rectBase, robot)

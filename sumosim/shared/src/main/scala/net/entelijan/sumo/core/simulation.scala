@@ -131,6 +131,17 @@ trait RobotSimulation[S1, V1, S2, V2] extends Simulation[S1, V1, S2, V2] {
     duel.robot2.robot.move(value2)
 
     handleCollisions(prevPosRobot1, prevPosRobot2)
+    sendUpdatableMessage(
+      new SumoSimulationMessage(
+        xpos1 = robot1.xpos,
+        ypos1 = robot1.ypos,
+        dir1 = robot1.direction,
+        xpos2 = robot2.xpos,
+        ypos2 = robot2.ypos,
+        dir2 = robot2.direction,
+        info = "Another step"
+      )
+    )
   }
 
 }

@@ -320,7 +320,7 @@ object Panels {
   }
 
   private def createHboxContainer(components: Component*): Container = {
-    createContainer(() => createBoxH(bottom = borderWidth))(components *)
+    createContainer(() => createBoxH(bottom = borderWidth))(components*)
   }
 
   case class HomeComponents(

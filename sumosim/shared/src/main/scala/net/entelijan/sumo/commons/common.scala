@@ -19,7 +19,15 @@ case class SumoSimulationMessage(
     info: String
 ) extends UpdatableMsg {
   override def toString: String = {
-    "SumoSimulationMessage[r1:(%.2f|%.2f|%.2f) r2:(%.2f|%.2f|%.2f) '%s']" format (xpos1, ypos1, dir1, xpos2, ypos2, dir2, info)
+    "SumoSimulationMessage[r1:(%.2f|%.2f|%.2f) r2:(%.2f|%.2f|%.2f) '%s']" format (
+      xpos1,
+      ypos1,
+      dir1,
+      xpos2,
+      ypos2,
+      dir2,
+      info
+    )
   }
 }
 
@@ -83,6 +91,10 @@ trait RobotEventsCollector {
 }
 
 /** Interface for robots used by simulations
+  * @tparam S
+  *   Sensor
+  * @tparam V
+  *   Indicates the robot how to move depending on the robots implementation
   */
 trait Robot[S, V] extends SelfRobot {
 

@@ -1,44 +1,27 @@
 package net.entelijan.sumo.reinforcement
 
 import doctus.core.DoctusSchedulerStopper
-import net.entelijan.sumo.commons.{SelfRobot, UpdatableMsg}
+import net.entelijan.sumo.commons.*
 import net.entelijan.sumo.core.{ControlledRobot, Duel, RobotSimulation}
 import net.entelijan.sumo.gui.example.CodedDiffDriveControllers
 import net.entelijan.sumo.robot.*
 import net.entelijan.sumo.util.Helper
 
-object Analyse {
+object Tryout {
 
-  def runValueCollectingSimulation(controllerIds: String): String = {
+  def run() = {
+    println("run simulation and write db from evnts")
 
     val (c1, c2) = {
-      val cs = controllerIds.split("-")
-      val id1 = cs(0)
-      val id2 = cs(1)
+      val id1 = "clever"
+      val id2 = "rotating"
       (
         CodedDiffDriveControllers.controller(id1, "A"),
-        CodedDiffDriveControllers.controller(id2, "B"),
+        CodedDiffDriveControllers.controller(id2, "B")
       )
     }
 
-    val collector = new WrapperCollector(
-      keys = List(
-        c1.shortName,
-        c2.shortName
-      ),
-      names = List(
-        "distLeft",
-        "distCenter",
-        "distRight",
-        "opponent",
-        "rotRight",
-        "rotLeft",
-        "xpos",
-        "ypos",
-        "direction"
-      )
-    )
-    val w1 = new ControllerWrapper(c1, collector)
+    val w1 = c1
     val r1 = new CombiSensorDiffDriveRobot() {
       override def name: String = w1.name
     }
@@ -60,7 +43,18 @@ object Analyse {
     ] {
 
       override def sendUpdatableMessage(msg: UpdatableMsg): Unit = {
-        throw new RuntimeException("Should never be called")
+        msg match {
+          case InfoMessage(info)     => println(s"### Info: ${info}")
+          case CollisionEventMessage => println(s"### Collision")
+          case FinishedGameEventMessage(duration, winnerName) =>
+            println(s"### FinishedGame $duration $winnerName")
+          case StartGameEventMessage(robotName1, robotName2) =>
+            println(s"### StartGame $robotName1 $robotName2")
+          case SumoSimulationMessage(x1, y1, dir1, x2, y2, dir2, info) =>
+            println(
+              f"### Info: ${info} [$x1%.2f $y1%2.2f $dir1%2.2f] [$x1%2.2f $y1%2.2f $dir1%2.2f]"
+            )
+        }
       }
 
       override def duel
@@ -114,7 +108,6 @@ object Analyse {
 
     sim.startRunning()
     println("finished simulation")
-    collector.transpose().mkString("\n")
   }
 
 }
