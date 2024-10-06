@@ -37,6 +37,32 @@ Collisions of robots is managed by the arena. Two robots collide if their distan
 
 ![arena](resources/sumosim-arena.jpg)
 
+## Features
+ * A simulator
+ * Some hrddcoded robots 
+ * A udp interface to control robots from logic written in any programming language
+
+## Usage
+
+### Prerequisites
+
+ * java >= 17
+ * sbt
+ * make
+
+### Setup
+
+ * checkout the repository with submodules 
+ * cd doctus && sbt publishLocal
+ * sbt 
+   * project sumosimJVM
+   * pack
+ * cd sumosim/jvm/target/pack %% make install
+ 
+### run
+
+Call the generated executable with --help
+
 ## Robots
 ### Differential drive
 A robot with two wheels. Each wheel is powered by a motor that can spin forward or backward.
@@ -64,14 +90,3 @@ and to the right.
 
 ### Combi
 Opponent Fan with T-border distance
-
-## TODOs Doctus
-
- - Remove the current Select Interface and replace it by Select1
- - Rename DoctusComponentFactory to DoctusCanvasSwingFactory 
- - Remove double buffering from DoctusComponentFactory
- - Add   System.setProperty("sun.java2d.opengl", "true") when creating a canvas
- - Make DoctusSelectSwingComboBox a case class. Check for other implementations that could also be case classes.
- - Done ? Also support DoctusImageAwt in DoctusGraphicsSwing (104ff), or remove DoctusImageAwt
- - DoctusSelectSwingComboBox as case class
- - remove all font size and font from from swing components
