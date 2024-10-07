@@ -37,6 +37,7 @@ lazy val sumosim = crossProject(JSPlatform, JVMPlatform)
     )
   )
   .jvmSettings(
+    packMain := Map("sumo" -> "net.entelijan.sumo.Main"),
     libraryDependencies += "com.lihaoyi" %% "utest" % utestVersion % "test",
     libraryDependencies += "com.lihaoyi" %% "upickle" % "3.2.0",
     libraryDependencies += organisation %% "doctus-core" % doctusVersion,
