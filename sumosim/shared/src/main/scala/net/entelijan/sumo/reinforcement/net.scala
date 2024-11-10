@@ -24,7 +24,8 @@ case class SensorCommand(
 case class DiffDriveCommand(
     robot1DiffDriveValues: DiffDriveValues,
     robot2DiffDriveValues: DiffDriveValues,
-    stepsCount: Int
+    stepsCount: Int,
+    stop: Boolean
 ) extends ReceiveCommand
 
 case class FinishedOkCommand(
@@ -42,7 +43,6 @@ class NetConnector[C] {
   def receive(data: String, conn: C, callback: (String, C) => Unit): Boolean = {
     try {
       val command = CommandParser.parse(data)
-      println(s" -- received '$command'")
       val sendCommand: SendCommand = command match {
         case StartCommand =>
           simOpt
@@ -50,6 +50,7 @@ class NetConnector[C] {
               FinishedErrorCommand("Simulation is already running")
             }
             .getOrElse {
+              println("Started new simulation")
               val robot1 = new CombiSensorDiffDriveRobot() {
                 override def name: String = "network 1"
               }
@@ -59,14 +60,13 @@ class NetConnector[C] {
               val sim = new NetSimulation[C](robot1, robot2)
               robot1.opponentRobot = robot2
               robot2.opponentRobot = robot1
-              println(s" --created a simulation '$sim'")
               simOpt = Some(sim)
               sim.start()
             }
-        case DiffDriveCommand(v1, v2, cnt) =>
+        case DiffDriveCommand(v1, v2, cnt, stop) =>
           simOpt
             .map { sim =>
-              sim.diffDriveValues(v1, v2, cnt)
+              sim.diffDriveValues(v1, v2, cnt, stop)
             }
             .getOrElse {
               FinishedErrorCommand("Simulation was stopped")
@@ -76,18 +76,18 @@ class NetConnector[C] {
       callback(sendData, conn)
       sendCommand match {
         case FinishedErrorCommand(_) =>
-          println(s" --- finished error")
+          println(s"Finished ERROR")
           simOpt = None
           true
         case FinishedOkCommand(_, _) =>
-          println(s" --- finished OK")
+          println(s"Finished OK")
           simOpt = None
           true
         case _ => true
       }
     } catch {
       case e: Throwable =>
-        println(s" --- catched exc $e close sim")
+        println(s"ERROR ${e.getMessage}")
         simOpt = None
         false
     }
@@ -109,14 +109,14 @@ class NetSimulation[C](
     val s1 = robot1.sensor
     val s2 = robot2.sensor
     val cmd = SensorCommand(s1, s2)
-    print(s" -- start created command '$cmd'")
     cmd
   }
 
   def diffDriveValues(
       r1: DiffDriveValues,
       r2: DiffDriveValues,
-      cnt: Int
+      cnt: Int,
+      stop: Boolean
   ): SendCommand = {
     robot1.move(r1)
     robot2.move(r2)
@@ -125,32 +125,40 @@ class NetSimulation[C](
     val prevPosRobot2 =
       Point2(robot2.xpos, robot2.ypos)
     handleCollisions(prevPosRobot1, prevPosRobot2)
-    checkForEnd(cnt) match {
-      case Winner(winner) =>
-        winner.addEvent("winner", "true")
-        FinishedOkCommand(
-          robot1Events = robot1.events.toSeq,
-          robot2Events = robot2.events.toSeq
-        )
-      case Draw =>
-        robot1.addEvent("draw", "true")
-        robot2.addEvent("draw", "true")
-        FinishedOkCommand(
-          robot1Events = robot1.events.toSeq,
-          robot2Events = robot2.events.toSeq
-        )
-      case Continue =>
-        val s1 = robot1.sensor
-        val s2 = robot2.sensor
-        SensorCommand(s1, s2)
+    if stop then {
+      robot1.addEvent("draw", "true")
+      robot2.addEvent("draw", "true")
+      FinishedOkCommand(
+        robot1Events = robot1.events.toSeq,
+        robot2Events = robot2.events.toSeq
+      )
+    } else {
+      checkForEnd(cnt) match {
+        case Winner(winner) =>
+          winner.addEvent("winner", "true")
+          FinishedOkCommand(
+            robot1Events = robot1.events.toSeq,
+            robot2Events = robot2.events.toSeq
+          )
+        case Draw =>
+          robot1.addEvent("draw", "true")
+          robot2.addEvent("draw", "true")
+          FinishedOkCommand(
+            robot1Events = robot1.events.toSeq,
+            robot2Events = robot2.events.toSeq
+          )
+        case Continue =>
+          val s1 = robot1.sensor
+          val s2 = robot2.sensor
+          SensorCommand(s1, s2)
+      }
     }
   }
 
   override def sendUpdatableMessage(msg: UpdatableMsg): Unit = {
     msg match {
-      case CollisionEventMessage =>
-        println("## Received collision event message")
-      case _ => // Nothing to do
+      case CollisionEventMessage => // Nothing to do
+      case _                     => // Nothing to do
     }
   }
 }
@@ -175,10 +183,12 @@ object CommandParser {
         val r1Data = split(1).split("#")(0)
         val r2Data = split(1).split("#")(1)
         val cntStr = split(1).split("#")(2)
+        val stopStr = split(1).split("#")(3)
         DiffDriveCommand(
           parseDiffDriveValues(r1Data),
           parseDiffDriveValues(r2Data),
-          cntStr.toInt
+          cntStr.toInt,
+          stopStr == "1"
         )
       case _ =>
         throw new IllegalArgumentException(
@@ -207,7 +217,6 @@ object CommandFormatter {
       case SensorCommand(r1, r2) =>
         s"B|${fcs(r1)}#${fcs(r2)}"
       case FinishedOkCommand(r1, r2) =>
-        println(s"-- finished ok ${r1} ${r2}")
         val s1 = r1.map { case (n, v) => s"${n}!${v}" }.mkString(";")
         val s2 = r2.map { case (n, v) => s"${n}!${v}" }.mkString(";")
         s"D|${s1}#${s2}"

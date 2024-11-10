@@ -227,7 +227,7 @@ trait Simulation[S1, V1, S2, V2]
     }
   }
 
-  val maxNumberOfSteps = 1000
+  val maxNumberOfSteps = 10000
 
   sealed trait EndReason
 

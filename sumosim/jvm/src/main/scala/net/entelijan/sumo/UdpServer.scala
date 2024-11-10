@@ -24,6 +24,7 @@ object UdpServer {
   }
 
   def start(port: Int): Unit = {
+    println(s"Listening on port $port")
     val socket = new DatagramSocket(port)
 
     val netConnector = new NetConnector[Connection]()
@@ -33,10 +34,8 @@ object UdpServer {
       while (continue) {
         val buf: Array[Byte] = new Array[Byte](256)
         val packet = new DatagramPacket(buf, buf.length)
-        println(s"-- Listening on $port")
         socket.receive(packet)
         val data = new String(packet.getData, 0, packet.getLength)
-        println(s"-- Data: $data")
         Connection(socket, packet.getAddress, packet.getPort)
         continue = netConnector.receive(
           data,

@@ -31,13 +31,26 @@ object NetSuite extends TestSuite {
       assert(cmd == StartCommand)
     }
 
-    test("parse diff drive command") {
-      val cmd = CommandParser.parse(data = "C|4.3000;1.5000#44.0000;-1.2000#0")
+    test("parse diff drive command 1") {
+      val cmd = CommandParser.parse(data = "C|4.3000;1.5000#44.0000;-1.2000#0#0")
       assert(
         cmd == DiffDriveCommand(
           DiffDriveValues(4.3, 1.5),
           DiffDriveValues(44.0, -1.2),
-          0
+          0,
+          false
+        )
+      )
+    }
+
+    test("parse diff drive command 2") {
+      val cmd = CommandParser.parse(data = "C|4.3000;1.5000#44.0000;-1.2000#110#1")
+      assert(
+        cmd == DiffDriveCommand(
+          DiffDriveValues(4.3, 1.5),
+          DiffDriveValues(44.0, -1.2),
+          110,
+          true
         )
       )
     }
