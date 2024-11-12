@@ -5,6 +5,12 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+  sumo:
+    image: sumo:latest
+    command: [ "sumo", "udp", "--port", "4444" ]
+    ports:
+      - "4444:4444/udp"
+
 
 volumes:
   mongo-data:  # Define a volume named mongo-data

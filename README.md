@@ -90,3 +90,10 @@ and to the right.
 
 ### Combi
 Opponent Fan with T-border distance
+
+# Run the simulator in docker
+
+1) Create an executable using sbt. `sbt "project sumosimJVM;pack"`
+2) Build an image. `docker buildx build -t sumo .`
+3) Start docker compose. `docker compose up -d`
+
