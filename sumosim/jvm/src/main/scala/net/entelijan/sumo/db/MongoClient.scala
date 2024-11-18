@@ -35,6 +35,18 @@ case class MongoJvmDatabaseClient(mongoClient: MongoClient)
     extends DatabaseClient {
 
   override def overviews: Seq[SimulationOverview] = {
+    def convertOverview(d: Document): Option[SimulationOverview] = {
+      return try {
+        val bd = toBsonDoc(d)
+        Some(Converter.overview(bd))
+      } catch {
+        case e: Exception => {
+          println(s"### ERROR converting ${d}. ${e.getMessage}")
+          None
+        }
+      }
+    }
+
     val database: MongoDatabase = mongoClient.getDatabase("sumosim")
     val collection: MongoCollection[Document] =
       database.getCollection("simulations")
@@ -45,7 +57,7 @@ case class MongoJvmDatabaseClient(mongoClient: MongoClient)
           .include("_id", "status", "started_at", "name", "robot1", "robot2")
       )
       .asScala
-      .map { d => Converter.overview(toBsonDoc(d)) }
+      .flatMap { d => convertOverview(d) }
       .toSeq
   }
 
