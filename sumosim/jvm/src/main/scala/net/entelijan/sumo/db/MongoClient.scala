@@ -40,7 +40,7 @@ case class MongoJvmDatabaseClient(mongoClient: MongoClient)
         val bd = toBsonDoc(d)
         Some(Converter.overview(bd))
       } catch {
-        case e: Exception => 
+        case e: Exception =>
           println(s"### ERROR converting $d. ${e.getMessage}")
           None
       }
@@ -113,27 +113,27 @@ object Converter {
   private val dFormatter = DateTimeFormatter.ofPattern("YY-MM-dd HH:mm:ss")
 
   private def id(doc: BsonDocument): String = {
-    val bson = doc.asScala.apply("_id")
+    val bson = doc.asScala("_id")
     bson.asObjectId().getValue.toString
   }
 
   private def string(doc: BsonDocument, key: String): String = {
-    val bson = doc.asScala.apply(key)
-    bson.asString.getValue
+    doc.asScala.get(key).map { _.asString.getValue.trim }.getOrElse("")
   }
 
   private def dateTime(doc: BsonDocument, key: String): String = {
-    val bson = doc.asScala.apply(key)
-    val lts = bson.asDateTime().getValue
-    val ldt = localDateTime(lts)
-    dFormatter.format(ldt)
+    def f(doc: BsonValue): String = {
+      val lts = doc.asDateTime().getValue
+      dFormatter.format(localDateTime(lts))
+    }
+    doc.asScala.get(key).map { f }.getOrElse("")
   }
 
   private def float(doc: BsonDocument, key: String): String = {
     def f(bson: BsonValue): String = {
       "%.2f".formatLocal(java.util.Locale.US, bson.asDouble().getValue)
     }
-    doc.asScala.get(key).map { bson => f(bson) }.getOrElse("")
+    doc.asScala.get(key).map { f }.getOrElse("")
   }
 
   private def robotName(doc: BsonDocument, key: String): String = {
