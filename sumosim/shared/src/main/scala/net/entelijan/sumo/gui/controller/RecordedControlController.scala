@@ -22,11 +22,11 @@ case class RecordedControlController(
     recordedController: RecordedController
 ) {
 
-  case class SearchItem(
+  private case class SearchItem(
       simulationOverview: SimulationOverview,
       searchString: String
   )
-  var searchItems = Seq.empty[SearchItem]
+  private var searchItems = Seq.empty[SearchItem]
 
   private def extract(so: SimulationOverview, index: Int): String = {
     index match {
@@ -34,6 +34,10 @@ case class RecordedControlController(
       case 1 => so.simulationName
       case 2 => so.robot1Name
       case 3 => so.robot2Name
+      case 4 => so.reward1
+      case 5 => so.reward2
+      case 6 => so.stepcount
+      case 7 => so.rewardhandler
     }
   }
 
@@ -68,22 +72,23 @@ case class RecordedControlController(
     }
   }
 
-  def adaptSearchText(in: String): String = in.toLowerCase().trim()
+  private def adaptSearchText(in: String): String = in.toLowerCase().trim()
 
-  def createSearchString(simOverview: SimulationOverview): String = {
+  private def createSearchString(simOverview: SimulationOverview): String = {
 
     adaptSearchText(simOverview.startedAt) +
       adaptSearchText(simOverview.simulationName) +
       adaptSearchText(simOverview.robot1Name) +
-      adaptSearchText(simOverview.robot2Name)
+      adaptSearchText(simOverview.robot2Name) +
+      adaptSearchText(simOverview.rewardhandler)
   }
 
-  def matches(searchString: String, filterTextString: String): Boolean =
+  private def matches(searchString: String, filterTextString: String): Boolean =
     searchString.indexOf(filterTextString) >= 0
 
   def setItems(): Unit = {
     val itemDesc = SelectItemDescription(
-      List(20, 20, 20, 20),
+      List(20, 20, 20, 20, 8, 8, 8, 20),
       extract
     )
     val filterTextString = adaptSearchText(filterText.text)
@@ -97,7 +102,7 @@ case class RecordedControlController(
     list.setItems(filteredOverviews, itemDesc)
   }
 
-  def loadAndSetItems(): Unit = {
+  private def loadAndSetItems(): Unit = {
     val simOverviews = dbClient.overviews.sortBy { o => o.startedAt }.reverse
     searchItems = simOverviews.map { so =>
       SearchItem(simulationOverview = so, searchString = createSearchString(so))

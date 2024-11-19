@@ -7,7 +7,11 @@ case class SimulationOverview(
     startedAt: String,
     simulationName: String,
     robot1Name: String,
-    robot2Name: String
+    robot2Name: String,
+    reward1: String,
+    reward2: String,
+    stepcount: String,
+    rewardhandler: String
 )
 
 case class SimulationState(

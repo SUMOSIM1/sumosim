@@ -36,14 +36,13 @@ case class MongoJvmDatabaseClient(mongoClient: MongoClient)
 
   override def overviews: Seq[SimulationOverview] = {
     def convertOverview(d: Document): Option[SimulationOverview] = {
-      return try {
+      try {
         val bd = toBsonDoc(d)
         Some(Converter.overview(bd))
       } catch {
-        case e: Exception => {
-          println(s"### ERROR converting ${d}. ${e.getMessage}")
+        case e: Exception => 
+          println(s"### ERROR converting $d. ${e.getMessage}")
           None
-        }
       }
     }
 
@@ -54,7 +53,18 @@ case class MongoJvmDatabaseClient(mongoClient: MongoClient)
       .find(Filters.eq("status", "finished"))
       .projection(
         Projections
-          .include("_id", "status", "started_at", "name", "robot1", "robot2")
+          .include(
+            "_id",
+            "status",
+            "started_at",
+            "name",
+            "robot1",
+            "robot2",
+            "reward1",
+            "reward2",
+            "stepcount",
+            "rewardhandler"
+          )
       )
       .asScala
       .flatMap { d => convertOverview(d) }
@@ -69,7 +79,14 @@ case class MongoJvmDatabaseClient(mongoClient: MongoClient)
       .find(Filters.eq("_id", new ObjectId(id)))
       .projection(
         Projections
-          .include("_id", "started_at", "name", "robot1", "robot2", "states")
+          .include(
+            "_id",
+            "started_at",
+            "name",
+            "robot1",
+            "robot2",
+            "states"
+          )
       )
       .asScala
       .head
@@ -112,6 +129,13 @@ object Converter {
     dFormatter.format(ldt)
   }
 
+  private def float(doc: BsonDocument, key: String): String = {
+    def f(bson: BsonValue): String = {
+      "%.2f".formatLocal(java.util.Locale.US, bson.asDouble().getValue)
+    }
+    doc.asScala.get(key).map { bson => f(bson) }.getOrElse("")
+  }
+
   private def robotName(doc: BsonDocument, key: String): String = {
     val bson = doc.asScala.apply(key)
     bson.asDocument().get("name").asString().getValue
@@ -123,7 +147,11 @@ object Converter {
       startedAt = dateTime(doc, "started_at"),
       simulationName = string(doc, "name"),
       robot1Name = robotName(doc, "robot1"),
-      robot2Name = robotName(doc, "robot2")
+      robot2Name = robotName(doc, "robot2"),
+      reward1 = float(doc, "reward1"),
+      reward2 = float(doc, "reward2"),
+      stepcount = float(doc, "stepcount"),
+      rewardhandler = string(doc, "rewardhandler")
     )
   }
 
