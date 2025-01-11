@@ -33,14 +33,32 @@ object RenderUtil {
     g.textFont(DoctusFontMonospace)
 
     g.text(info, DoctusPoint(10, fontSize), 0)
-    g.text(robotRenderInfo1.desc, DoctusPoint(30, 2 * fontSize), 0)
-    g.text(robotRenderInfo2.desc, DoctusPoint(30, 3 * fontSize), 0)
+    g.text(
+      robotRenderInfo1.desc,
+      DoctusPoint(10 + 1.2 * fontSize, 2 * fontSize),
+      0
+    )
+    g.text(
+      robotRenderInfo2.desc,
+      DoctusPoint(10 + 1.2 * fontSize, 3 * fontSize),
+      0
+    )
 
     g.fill(robotRenderInfo1.mainColor, 255)
-    g.ellipse(13, 1.7 * fontSize, 6, 6)
+    g.ellipse(
+      10 + 0.3 * fontSize,
+      1.8 * fontSize,
+      0.35 * fontSize,
+      0.35 * fontSize
+    )
 
     g.fill(robotRenderInfo2.mainColor, 255)
-    g.ellipse(13, 2.7 * fontSize, 6, 6)
+    g.ellipse(
+      10 + 0.3 * fontSize,
+      2.8 * fontSize,
+      0.35 * fontSize,
+      0.35 * fontSize
+    )
 
   }
 
