@@ -94,14 +94,14 @@ object JvmVideo {
         DoctusBufferedImage(bufferedImage)
         val graphics = DoctusGraphicsAwt(bufferedImage.createGraphics())
         drawImage(graphics, s, state, i, maxState)
-        val outfile = imageDir / f"sumosim-video-${s.simulationName}-$i%08d.png"
+        val outfile = imageDir / f"${s.simulationName}-sumosim-video-$i%08d.png"
         ImageIO.write(bufferedImage, "PNG", outfile.toIO)
         if i % docInterval == 0 && i > 0 then {
           println(s"Created $i / $maxState images in $imageDir")
         }
       }
-      val inFiles = s"$imageDir/sumosim-video*.png"
-      val videoOutFile = outDir / f"sumosim-video-${s.simulationName}.mp4"
+      val inFiles = s"$imageDir/*sumosim-video*.png"
+      val videoOutFile = outDir / f"${s.simulationName}-sumosim-video.mp4"
       val cmd = Seq(
         "ffmpeg",
         "-y",
